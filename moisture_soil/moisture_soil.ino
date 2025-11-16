@@ -8,8 +8,8 @@
 #include <WiFi.h>
 #include <BlynkSimpleEsp32.h>
 
-char ssid[] = "YASH";
-char pass[] = "oooiiiiooo";
+char ssid[] = "levi";
+char pass[] = "744912";
 
 void setup() {
   Serial.begin(115200);
