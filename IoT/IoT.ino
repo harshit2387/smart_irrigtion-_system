@@ -65,53 +65,42 @@ void updateSensors() {
   soil1 = analogRead(SOIL_PIN_1);
   soil2 = analogRead(SOIL_PIN_2);
 
+  int moist1 = map(soil1, 0, 4095, 100, 0);
+  int moist2 = map(soil2, 0, 4095, 100, 0);
+  int avgSoil = (moist1 + moist2) / 2;
   float avgTH = (temperature + humidity) / 2.0;
-  float avgSoil = (soil1 + soil2) / 2.0;
 
-  // Send to Blynk
+  // Pump control
   if (avgSoil < 60) {
-    digitalWrite(RELAY_PIN, HIGH); // Turn ON pump
+    digitalWrite(RELAY_PIN, HIGH);
   } else {
-    digitalWrite(RELAY_PIN, LOW);  // Turn OFF pump
+    digitalWrite(RELAY_PIN, LOW);
   }
+
+  // Blynk updates
   Blynk.virtualWrite(VPIN_TEMP, temperature);
   Blynk.virtualWrite(VPIN_HUM, humidity);
   Blynk.virtualWrite(VPIN_AVG, avgTH);
+  // Optional: Blynk.virtualWrite(V4, avgSoil); // Add VPIN_SOIL if needed
 
-  // Update LCD
+  // LCD Display
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Temp:");
-  if (isnan(temperature)) {
-    lcd.print("NaN");
-  } else {
-    lcd.print(temperature);
-    lcd.print("C");
-  }
+  lcd.print("T:");
+  lcd.print(isnan(temperature) ? "NaN" : String(temperature, 1));
+  lcd.print("C H:");
+  lcd.print(isnan(humidity) ? "NaN" : String(humidity, 0));
+  lcd.print("%");
 
   lcd.setCursor(0, 1);
-  lcd.print("Hum:");
-  if (isnan(humidity)) {
-    lcd.print("NaN");
-  } else {
-    lcd.print(humidity);
-    lcd.print("%");
-  }
-
-  // Optional: show soil moisture average
-  lcd.setCursor(0, 2); // For 20x4 LCD; for 16x2, you can alternate display or scroll
-  lcd.print("Soil Avg:");
-  lcd.print(avgSoil, 0); // Rounded to integer
+  lcd.print("S:");
+  lcd.print(avgSoil);
+  lcd.print("%");
 
   // Serial debug
-  Serial.print("Temp: ");
-  Serial.print(temperature);
-  Serial.print(" | Hum: ");
-  Serial.print(humidity);
-  Serial.print(" | Soil1: ");
-  Serial.print(soil1);
-  Serial.print(" | Soil2: ");
-  Serial.print(soil2);
-  Serial.print(" | SoilAvg: ");
-  Serial.println(avgSoil);
+  Serial.print("Temp: "); Serial.print(temperature);
+  Serial.print(" | Hum: "); Serial.print(humidity);
+  Serial.print(" | Moist1: "); Serial.print(moist1);
+  Serial.print(" | Moist2: "); Serial.print(moist2);
+  Serial.print(" | AvgSoil: "); Serial.println(avgSoil);
 }
