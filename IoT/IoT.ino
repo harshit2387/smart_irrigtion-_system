@@ -8,8 +8,8 @@
 #include <LiquidCrystal_I2C.h>
 
 // WiFi credentials
-char ssid[] = "YASH";
-char pass[] = "oooiiiiooo";
+char ssid[] = "levi";
+char pass[] = "744912";
 
 // Sensor and relay pins
 #define DHTPIN 4
